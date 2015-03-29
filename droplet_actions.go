@@ -21,6 +21,8 @@ type DropletActionsService interface {
 	Resize(int, string, bool) (*Action, *Response, error)
 	Rename(int, string) (*Action, *Response, error)
 	Snapshot(int, string) (*Action, *Response, error)
+	ResetPassword(int) (*Action, *Response, error)
+	Rebuild(int, string) (*Action, *Response, error)
 	doAction(int, *ActionRequest) (*Action, *Response, error)
 	Get(int, int) (*Action, *Response, error)
 	GetByURI(string) (*Action, *Response, error)
@@ -101,6 +103,25 @@ func (s *DropletActionsServiceOp) Snapshot(id int, name string) (*Action, *Respo
 	request := &ActionRequest{
 		"type": requestType,
 		"name": name,
+	}
+	return s.doAction(id, request)
+}
+
+// Reset password
+// https://developers.digitalocean.com/documentation/v2/#password-reset-a-droplet
+func (s *DropletActionsServiceOp) ResetPassword(id int) (*Action, *Response, error) {
+	request := &ActionRequest{
+		"type": "password_reset",
+	}
+	return s.doAction(id, request)
+}
+
+// Rebuild Droplet
+// https://developers.digitalocean.com/documentation/v2/#rebuild-a-droplet
+func (s *DropletActionsServiceOp) Rebuild(id int, image string) (*Action, *Response, error) {
+	request := &ActionRequest{
+		"type":  "rebuild",
+		"image": image,
 	}
 	return s.doAction(id, request)
 }
